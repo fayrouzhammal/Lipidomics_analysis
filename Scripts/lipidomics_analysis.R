@@ -5,6 +5,7 @@ library(tidyr)
 library(limma)
 library(pheatmap)
 library(RColorBrewer)
+library(factoextra)  # For PCA visualization
 
 # Function to normalize data based on user choice
 normalize_data <- function(data, method) {
@@ -32,6 +33,21 @@ generate_rle_plot <- function(data, title, output_file) {
   boxplot(rle_data, main = title, outline = FALSE, col = brewer.pal(9, "Set1"))
   dev.copy(pdf, output_file, width = 10, height = 6)
   dev.off()
+}
+
+# Function to generate PCA plots
+generate_pca_plot <- function(data, metadata, title, output_file) {
+  pca_result <- prcomp(t(data), scale. = TRUE)  # Transpose data for PCA
+  pca_data <- as.data.frame(pca_result$x)
+  pca_data$Sample_Group <- metadata$`Sample Group`  # Add sample groups for coloring
+
+  p <- ggplot(pca_data, aes(x = PC1, y = PC2, color = Sample_Group)) +
+    geom_point(size = 3) +
+    labs(title = title, x = "PC1", y = "PC2") +
+    theme_minimal() +
+    theme(legend.position = "top")
+  
+  ggsave(output_file, plot = p, width = 8, height = 6)
 }
 
 # Main script
@@ -65,11 +81,17 @@ numeric_data <- data[, !names(data) %in% metadata_columns]
 # Generate RLE plot before normalization
 generate_rle_plot(numeric_data, "RLE Plot Before Normalization", file.path(normalization_dir, "RLE_Before_Normalization.pdf"))
 
+# Generate PCA plot before normalization
+generate_pca_plot(numeric_data, data, "PCA Plot Before Normalization", file.path(normalization_dir, "PCA_Before_Normalization.pdf"))
+
 # Normalize the data
 normalized_data <- normalize_data(numeric_data, normalization_method)
 
 # Generate RLE plot after normalization
 generate_rle_plot(normalized_data, "RLE Plot After Normalization", file.path(normalization_dir, "RLE_After_Normalization.pdf"))
+
+# Generate PCA plot after normalization
+generate_pca_plot(normalized_data, data, "PCA Plot After Normalization", file.path(normalization_dir, "PCA_After_Normalization.pdf"))
 
 # Log2 transformation
 log2_transformed_data <- log2(normalized_data + 1)
