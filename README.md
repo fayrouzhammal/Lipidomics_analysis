@@ -10,8 +10,10 @@ This repository contains an R script for normalizing and analyzing lipidomics da
 3. [Usage](#usage)
 4. [Input Files](#input-files)
 5. [Output Files](#output-files)
-6. [Dependencies](#dependencies)
-7. [Contact](#contact)
+6. [Lipid Classification](#lipid-classification)
+7. [Lipid Set Encrichment Analysis](#lipid-set-enrichment-analysis)
+8. [Dependencies](#dependencies)
+9. [Contact](#contact)
 
 ---
 
@@ -105,8 +107,30 @@ output_dir/
 ```
 ---
 
+## Lipid Classification
+
+### Input
+| Lipid Name | 
+|-------------|
+| Lipid1     | 
+| Lipid2     |
+
+### Run the Script:
+```bash
+Rscript lipids_classification.R --input path/to/input.txt --output path/to/output.tsv
+```
+---
+
+## Lipid Set Enrichment Analysis
+
+### Run the Script:
+```bash
+Rscript LSEA.R /path/to/csv_folder /path/to/lipid_classification.tsv /path/to/output_folder
+```
+
+---
 ## Dependencies
-The script requires the following R packages:
+The scripts requires the following R packages:
 
 - ggplot2
 - dplyr
@@ -114,10 +138,21 @@ The script requires the following R packages:
 - limma
 - pheatmap
 - RColorBrewer
+- factoextra
+- stringr
+- gridExtra
+- ggplot2
+- tibble
+- optparse
+- fgsea
 
 Install them using:
 ```R
-install.packages(c("ggplot2", "dplyr", "tidyr", "limma", "pheatmap", "RColorBrewer"))
+install.packages(c("ggplot2", "dplyr", "tidyr", "limma", "pheatmap", "RColorBrewer","factoextra", "stringr", "gridExtra", "ggplot2", "tibble", "optparse"))
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+  BiocManager::install("fgsea")
 ```
 ---
 
