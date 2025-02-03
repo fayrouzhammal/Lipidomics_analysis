@@ -1,11 +1,26 @@
 # Load required packages
 library(stringr)
+library(optparse)
 
-# Read the input file (modify the file path if necessary)
-lipids <- read.delim("/path/to/your/file/lipid_names.txt", header = FALSE, stringsAsFactors = FALSE, sep='\t')
+# Define command-line arguments
+option_list <- list(
+  make_option(c("-i", "--input"), type="character", default=NULL, help="Input file path", metavar="character"),
+  make_option(c("-o", "--output"), type="character", default=NULL, help="Output file path", metavar="character")
+)
+
+opt_parser <- OptionParser(option_list=option_list)
+opt <- parse_args(opt_parser)
+
+# Validate inputs
+if (is.null(opt$input) || is.null(opt$output)) {
+  stop("Both input and output file paths must be provided.")
+}
+
+# Read the input file
+lipids <- read.delim(opt$input, header = FALSE, stringsAsFactors = FALSE, sep='\t')
 
 # Rename the column to "Lipid" to standardize
-tnames(lipids) <- c("Lipid")
+names(lipids) <- c("Lipid")
 
 # Define the lipid classification function
 classify_lipid <- function(lipid) {
@@ -77,4 +92,4 @@ lipids$Saturation <- sapply(lipids$Lipid, classify_saturation)
 head(lipids)
 
 # Write the annotated table to file
-write.table(lipids, file = "/path/to/your/file/lipid_classification.tsv", sep = "\t", quote = FALSE, row.names = FALSE)
+write.table(lipids, file = opt$output, sep = "\t", quote = FALSE, row.names = FALSE)
