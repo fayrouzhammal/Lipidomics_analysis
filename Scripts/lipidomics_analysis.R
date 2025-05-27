@@ -4,7 +4,7 @@ library(dplyr)
 library(tidyr)
 library(limma)
 library(pheatmap)
-library(RColorBrewer)
+library(RColorBrewer) 
 library(factoextra)  # For PCA visualization
 
 # Function to normalize data based on user choice
