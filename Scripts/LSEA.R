@@ -4,7 +4,7 @@
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) != 3) {
   stop("Usage: Rscript script.R <input_csv_folder> <lipid_classification_file> <output_folder>")
-}
+} 
 input_folder <- args[1]
 classification_file <- args[2]
 output_dir <- args[3]
